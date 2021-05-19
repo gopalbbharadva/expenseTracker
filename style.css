@@ -38,6 +38,7 @@ header {
   align-items: center;
 }
 input {
+    max-width: 100%;
   padding: 1rem;
   margin: 0.5rem;
   border: none;
@@ -87,6 +88,7 @@ button:disabled {
     justify-content: space-evenly;
 }
 #delete{
+    cursor: pointer;
     font-size: x-large;
     color: red;
     margin-left: 1rem;
@@ -97,6 +99,7 @@ button:disabled {
 }
 small{
     color: #059669;
+    padding-top: 0.2rem;
 }
 hr {
   max-width: 400px;
