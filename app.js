@@ -33,20 +33,18 @@ const btnHandler = () => {
   // const tableText = `<div>item amount::${currentItem.item}</div>
   // <div>item description::${currentItem.itemDesc}</div>`;
 
-  const newItem = createItem();
-  const joinedExpenses = newItem.join("");
-
-  output.innerHTML = joinedExpenses;
+  const newItem = createItem(expenseAllItems);
+  showItems(newItem);
   expenseAmt.value = "";
   expenseDesc.value = "";
 };
 
 function getDate(date) {
-  return date.itemDate.toLocaleTimeString("en-Us");
+  return date.itemDate.toLocaleTimeString("en-Us", {});
 }
 
-function createItem() {
-  return expenseAllItems.map((item) => {
+function createItem(itemArray) {
+  return itemArray.map((item) => {
     return `<div class="expenseItem">
     <div style="display:flex;flex-direction:column;align-items:flex-start">
     <p>${item.itemDesc}</p>
@@ -54,16 +52,27 @@ function createItem() {
     </div>
     <div>
     <small>${item.itemAmt} <i class="fas fa-rupee-sign"></i></small>
-    <button style="background:transparent;margin:0;padding:0"><i id="delete"
+    <button onclick="deleteItem(${item.itemDate.valueOf()})" style="background:transparent;margin:0;padding:0"><i id="delete"
      class="far fa-trash-alt"></i></button>
     </div>
     </div>`;
   });
 }
 
-// function deleteItem(deleteItem) {
-//   console.log(deleteItem);
-// }
+function showItems(itemsArr) {
+  const joinedExpenses = itemsArr.join("");
+  output.innerHTML = joinedExpenses;
+}
+
+function deleteItem(deleteItem) {
+  let newArray = [];
+  newArray = expenseAllItems.filter((item) => {
+    return item.itemDate.valueOf() !== deleteItem;
+  });
+  expenseAllItems = newArray;
+  const newItem = createItem(newArray);
+  showItems(newItem);
+}
 btn.addEventListener("click", btnHandler);
 expenseAmt.addEventListener("input", inputHandler);
 expenseDesc.addEventListener("input", inputHandler);
