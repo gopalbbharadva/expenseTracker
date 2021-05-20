@@ -16,12 +16,13 @@
   <body>
     <div>
       <header>
-        <p style="margin: 0">Expense Tracker App</p>
+        <p style="margin: 0; font-size: larger">Expense Tracker App</p>
       </header>
       <div class="inputDiv">
         <h3>Total:</h3>
         <div class="inputDiv-amt">
           <input
+            style="font-size: 1rem"
             type="number"
             placeholder="What's Amount?"
             id="expenseAmount"
@@ -31,14 +32,22 @@
           </div>
         </div>
         <div class="inputDiv-desc">
-          <input type="text" placeholder="Which expense" id="expenseDesc" />
-          <div><i class="fas fa-tag"></i></i></div>
+          <input
+            type="text"
+            style="font-size: 1rem"
+            placeholder="Which expense"
+            id="expenseDesc"
+          />
+          <div><i class="fas fa-tag"></i></div>
         </div>
         <button disabled><i class="fas fa-angle-double-right"></i></button>
       </div>
-      <hr>
       <div class="output"></div>
     </div>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <script src="app.js"></script>
   </body>
-  <script src="app.js"></script>
 </html>
