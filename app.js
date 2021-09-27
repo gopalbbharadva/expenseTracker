@@ -14,18 +14,18 @@ const result = document.querySelector("h3");
 const expenseAmt = document.querySelector("#expenseAmount");
 const expenseDesc = document.querySelector("#expenseDesc");
 const output = document.querySelector(".output");
+const form = document.querySelector(".inputDiv");
 
 let expenseAmount = 0,
   expenseDescription = null;
-let expenseAllItems = [];
 totalAmount = 0;
 const inputHandler = () => {
   expenseAmt.value && expenseDesc.value
     ? (btn.disabled = false)
     : (btn.disabled = true);
 };
-getData();
-const btnHandler = () => {
+const btnHandler = (e) => {
+  e.preventDefault();
   let currentItem = {};
   expenseAmount = expenseAmt.value;
   expenseDescription = expenseDesc.value;
@@ -37,82 +37,65 @@ const btnHandler = () => {
   currentItem.itemDesc = expenseDescription;
   currentItem.itemDate = new Date();
 
-  // console.log(currentItem.itemDate);
-
-  expenseAllItems.push(currentItem);
-  // console.table(expenseAllItems);
   addItemDb(currentItem);
-  // const tableText = `<div>item amount::${currentItem.item}</div>
-  // <div>item description::${currentItem.itemDesc}</div>`;
-  // createItem(expenseAllItems);
-  // let newItem = createItem(expenseAllItems);
-  // showItems(newItem);
+
   expenseAmt.value = "";
   expenseDesc.value = "";
   inputHandler();
 };
-
 function getDate(date) {
-  return date.createdAt.toLocaleDateString("en-Us", {
-    year:"numeric",
-    month:"long",
-    day:"numeric"
-  });
+  return date.toDate().toLocaleTimeString();
 }
 
 function addItemDb(itemObj) {
+  let count = 0;
+  let d=new Date();
+  d.toLocaleTimeString();
+  count++;
   return firebase.firestore().collection("expenses").add({
+    id: count,
     itemAmount: itemObj.itemAmt,
     description: itemObj.itemDesc,
-    createdAt: itemObj.itemDate
+    createdAt: d,
   });
+  //
 }
 
-function createItem(itemArray) {
-  // console.log(itemArray[0].itemAmount);
-  return itemArray.map((item) => {
-    return `<div class="expenseItem">
-    <div style="display:flex;flex-direction:column;align-items:flex-start">
-    <p>${item.description}</p>
-    </div>
-    <div>
-    <small>${item.itemAmount} <i class="fas fa-rupee-sign"></i></small>
-    <button onclick="deleteItem(${item.createdAt.valueOf()})" style="background:transparent;margin:0;padding:0"><i id="delete"
-     class="far fa-trash-alt"></i></button>
-    </div>
-    </div>`;
-  });
+function createItem(itemObj) {
+  // let id=itemObj.doc.data().createdAt.toMillis();
+  // console.log(id);
+  const mainDiv = document.createElement("div");
+  mainDiv.innerHTML = `<div class="expenseItem">
+  <div style="display:flex;flex-direction:column;align-items:flex-start">
+  <p>${itemObj.doc.data().description}</p>
+  <small>${getDate(itemObj.doc.data().createdAt)}</small>
+  </div>
+  <div>
+  <small>${
+    itemObj.doc.data().itemAmount
+  } <i class="fas fa-rupee-sign"></i></small>
+  <button onclick="deleteItem()"
+  style="background:transparent;margin:0;padding:0"><i id="delete"
+   class="far fa-trash-alt"></i></button>
+  </div>
+  </div>`;
+  output.appendChild(mainDiv);
 }
-const tempArr=[];
+getData();
 function getData() {
+  console.log("get data function");
   firebase
     .firestore()
     .collection("expenses")
-    .onSnapshot((snap) => {
-      snap.docs.map((item) => {
-          tempArr.push(item.data());
-          let newItem = createItem(tempArr);
-          showItems(newItem);
+    .orderBy("createdAt")
+    .onSnapshot((snapshot) => {
+      snapshot.docChanges().forEach((item) => {
+        if (item.type === "added") createItem(item);
       });
     });
 }
 
-function showItems(itemsArr) {
-  const joinedExpenses = itemsArr.join("");
-  output.innerHTML = joinedExpenses;
-}
-function deleteItem(deleteItem) {
-  if (window.confirm("Are you sure you want to delete?")) {
-      
-    // let newArray = [];
-    // newArray = expenseAllItems.filter((item) => {
-    //   return item.itemDate.valueOf() !== deleteItem;
-    // });
-    // expenseAllItems = newArray;
-    // const newItem = createItem(newArray);
-    // showItems(newItem);
-  }
-}
-btn.addEventListener("click", btnHandler);
+function deleteItem(itemId) {}
+form.addEventListener("submit", (e) => btnHandler(e));
 expenseAmt.addEventListener("input", inputHandler);
 expenseDesc.addEventListener("input", inputHandler);

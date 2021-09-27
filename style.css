@@ -106,3 +106,8 @@ hr {
   margin: auto;
   margin-top: 10px;
 }
+.fa-rupee-sign{
+  color: #059669;
+  font-size: 1rem;
+  padding-left: 3px;
+}
