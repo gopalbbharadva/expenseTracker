@@ -8,7 +8,6 @@ var firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
 const btn = document.querySelector("button");
 const result = document.querySelector("h3");
 const expenseAmt = document.querySelector("#expenseAmount");
@@ -44,16 +43,16 @@ const btnHandler = (e) => {
   inputHandler();
 };
 function getDate(date) {
-  return date.toDate().toLocaleTimeString();
+  let time=`${date.toDate().getHours()}:${date.toDate().getMinutes()}`
+  return time
+  
 }
 
 function addItemDb(itemObj) {
-  let count = 0;
-  let d=new Date();
-  d.toLocaleTimeString();
-  count++;
+  let d = new Date();
+  let str=d.getTime();
   return firebase.firestore().collection("expenses").add({
-    id: count,
+    id:str,
     itemAmount: itemObj.itemAmt,
     description: itemObj.itemDesc,
     createdAt: d,
@@ -62,7 +61,7 @@ function addItemDb(itemObj) {
 }
 
 function createItem(itemObj) {
-  // let id=itemObj.doc.data().createdAt.toMillis();
+  let id = itemObj.doc.data().createdAt;
   // console.log(id);
   const mainDiv = document.createElement("div");
   mainDiv.innerHTML = `<div class="expenseItem">
@@ -74,7 +73,7 @@ function createItem(itemObj) {
   <small>${
     itemObj.doc.data().itemAmount
   } <i class="fas fa-rupee-sign"></i></small>
-  <button onclick="deleteItem()"
+  <button onclick="deleteItem(${id})"
   style="background:transparent;margin:0;padding:0"><i id="delete"
    class="far fa-trash-alt"></i></button>
   </div>
@@ -95,7 +94,9 @@ function getData() {
     });
 }
 
-function deleteItem(itemId) {}
+function deleteItem(itemId) {
+  console.log(itemId);
+}
 form.addEventListener("submit", (e) => btnHandler(e));
 expenseAmt.addEventListener("input", inputHandler);
 expenseDesc.addEventListener("input", inputHandler);
